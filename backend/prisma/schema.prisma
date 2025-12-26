@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  ADMIN
+  USER
+  RESOLVER
+}
+
+enum ComplaintStatus {
+  PENDING
+  IN_PROGRESS
+  RECHECK
+  DONE
+}
+
+model User {
+  id          String       @id @default(uuid())
+  name        String
+  email       String        @unique
+  password    String
+  role        Role          @default(USER)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  complaints  Complaint[]   @relation("UserComplaints")
+  assignedComplaints Complaint[] @relation("ResolverComplaints")
+}
+
+model Complaint {
+  id          String          @id @default(uuid())
+  title       String
+  description String
+  status      ComplaintStatus @default(PENDING)
+  userId      String
+  resolverId  String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  user        User            @relation("UserComplaints", fields: [userId], references: [id], onDelete: Cascade)
+  resolver    User?           @relation("ResolverComplaints", fields: [resolverId], references: [id], onDelete: SetNull)
+}

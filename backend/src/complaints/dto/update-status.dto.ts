@@ -1,0 +1,8 @@
+import { IsEnum } from 'class-validator';
+import { ComplaintStatus } from '@prisma/client';
+
+export class UpdateStatusDto {
+  @IsEnum(ComplaintStatus)
+  status: ComplaintStatus;
+}
+
