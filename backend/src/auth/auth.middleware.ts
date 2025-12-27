@@ -7,6 +7,11 @@ export class AuthMiddleware implements NestMiddleware {
   constructor(private authService: AuthService) {}
 
   use(req: Request, res: Response, next: NextFunction) {
+    // Allow OPTIONS requests (CORS preflight)
+    if (req.method === 'OPTIONS') {
+      return next();
+    }
+
     // Exclude auth routes
     if (req.path.startsWith('/auth/login') || req.path.startsWith('/auth/register')) {
       return next();
