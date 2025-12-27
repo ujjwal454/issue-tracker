@@ -5,6 +5,7 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
+import { SignOptions } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -99,7 +100,7 @@ export class AuthService {
     const secret = this.configService.get<string>('JWT_SECRET') || 'supersecretkey';
     const expiresIn = this.configService.get<string>('JWT_EXPIRES_IN') || '7d';
 
-    return jwt.sign(payload, secret, { expiresIn });
+    return jwt.sign(payload, secret, { expiresIn } as SignOptions);
   }
 
   verifyToken(token: string): { userId: string; role: string } {
